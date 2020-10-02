@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[3]:
+# In[1]:
 
 
-import requests
-import os
+import requests # note to self (Kami): HTTP library
+import os # note to self (Kami): "OS module in python provides functions for interacting with the operating system"
 from requests_oauthlib import OAuth1
 # These are my account's secret details. Please don't share it with anyone
 CLIENT_ID="31fb73b2d6fe48178e624cfc0b53e487"
 CLIENT_SECRET="7b12c66ffc5b4e5a85fc17ed8a62ac87"
 
 
-# In[4]:
+# In[2]:
 
 
 AUTH_URL = 'https://accounts.spotify.com/api/token'
@@ -25,7 +25,7 @@ auth_response = requests.post(AUTH_URL, {
 })
 
 
-# In[5]:
+# In[3]:
 
 
 auth_response_data = auth_response.json()
@@ -34,7 +34,8 @@ auth_response_data = auth_response.json()
 access_token = auth_response_data['access_token']
 
 
-# In[6]:
+
+# In[4]:
 
 
 headers = {
@@ -42,20 +43,21 @@ headers = {
 }
 
 
-# In[7]:
+# In[5]:
 
 
 # Setting the local path for the music dataset, change this one to yours
-path="/Users/soulist/Desktop/discodataset"
+path="/Users/Kami/Downloads/Disco-Selection"
 
 
-# In[15]:
+# In[6]:
 
 
 import eyed3 # Library for reading the mp3 tags
 
 
-discolist=os.listdir(path) # Looping over mp3 songs in data directory
+discolist=os.listdir(path) # Looping over mp3 songs in data directory 
+# (used to get the list of all files and directories in the specified directory)
 
 
 
@@ -77,11 +79,9 @@ for i in discolist:
     track=eyed3.load(str(path+"/"+i))
     tracks_ids[track.tag.title]=get_track_id(track)
     print("ID search completed for "+track.tag.title)
-    
-    
 
 
-# In[9]:
+# In[7]:
 
 
 # This is an example of extracting a feature for one audio. Just loop over the "tracks_ids" dictionary
@@ -94,11 +94,79 @@ track_id = '3tjFYV6RSFtuktYl3ZtYcq'
 r = requests.get(BASE_URL + 'audio-features/' + track_id, headers=headers)
 
 
-# In[10]:
+# In[8]:
 
 
 r = r.json()
 r
+
+
+# In[9]:
+
+
+import pandas as pd
+
+
+# In[10]:
+
+
+track_features = []
+for key,value in tracks_ids.items():
+    track_features.append(requests.get(BASE_URL + 'audio-features/' + value, headers=headers).json())
+
+
+# In[11]:
+
+
+track_features_dict = {}
+for d in track_features:
+    for k, v in d.items():  
+        track_features_dict.setdefault(k, []).append(v)
+
+
+# In[12]:
+
+
+df = pd.DataFrame.from_dict(track_features_dict)
+
+
+# In[13]:
+
+
+track_name = []
+for key,value in tracks_ids.items():
+    track_name.append(key)
+
+
+# In[14]:
+
+
+df.insert(0, 'Track', track_name)
+
+
+# In[15]:
+
+
+artist = []
+
+
+# In[16]:
+
+
+for i in range(len(discolist)):
+    artist.append(discolist[i].replace('.',' -').split(' - ')[1])
+
+
+# In[17]:
+
+
+df.insert(1,'Artist',artist)
+
+
+# In[18]:
+
+
+df.head()
 
 
 # In[ ]:
