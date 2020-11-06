@@ -10,7 +10,7 @@
 # In[1]:
 
 CLIENT_ID="31fb73b2d6fe48178e624cfc0b53e487"
-CLIENT_SECRET=""
+CLIENT_SECRET="7b12c66ffc5b4e5a85fc17ed8a62ac87"
 import requests # note to self (Kami): HTTP library
 from localvariables_iskander import path
 import os # note to self (Kami): "OS module in python provides functions for interacting with the operating system"
