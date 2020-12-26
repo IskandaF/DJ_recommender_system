@@ -8,16 +8,13 @@
 # coding: utf-8
 
 # In[1]:
-
-CLIENT_ID="31fb73b2d6fe48178e624cfc0b53e487"
-CLIENT_SECRET="7b12c66ffc5b4e5a85fc17ed8a62ac87"
+import sys
+sys.path.insert(1, '/Users/soulist/Desktop/')
+import key
 import requests # note to self (Kami): HTTP library
 from localvariables_iskander import path
 import os # note to self (Kami): "OS module in python provides functions for interacting with the operating system"
 import statistics
-# These are my account's secret details. Please don't share it with anyone
-
-
 # In[2]:
 path="discodataset"
 
@@ -26,9 +23,14 @@ AUTH_URL = 'https://accounts.spotify.com/api/token'
 # POST
 auth_response = requests.post(AUTH_URL, {
     'grant_type': 'client_credentials',
-    'client_id': CLIENT_ID,
-    'client_secret': CLIENT_SECRET,
+    'client_id': key.CLIENT_ID,
+    'client_secret': key.CLIENT_SECRET,
 })
+
+# These are my account's secret details. Please don't share it with anyone
+
+
+# In[2]:
 
 
 # In[3]:
